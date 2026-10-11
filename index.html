@@ -79,6 +79,11 @@ const { useState, useEffect, useMemo } = React;
 
 // ── Language: "mix" = original text (English+Hinglish), "en", "hi" ──
 let _lang = loadLS("rb_lang","mix");
+let _day = false;
+// Top-level (not inside other components) so inputs keep focus while typing
+const Inp = ({...p}) => <input style={{background:D.inputBg(_day),border:`1px solid ${D.inputBdr(_day)}`,borderRadius:10,padding:"11px 13px",color:D.text(_day),fontSize:14,width:"100%",outline:"none"}} {...p}/>;
+const PBtn = ({style,children,...p}) => <button style={{background:D.text(_day),border:"none",color:_day?"#fff":"#000",padding:"12px",borderRadius:10,fontWeight:700,cursor:"pointer",fontSize:14,width:"100%",...style}} {...p}>{children}</button>;
+
 // [phrase, English, Hindi]  (null = keep as is)
 const DICT = [
 ["Home",null,"होम"],["Dashboard",null,"डैशबोर्ड"],["Tenants",null,"किराएदार"],["Payments",null,"भुगतान"],["Pay",null,"भुगतान"],["History",null,"इतिहास"],["More",null,"और"],["Settings",null,"सेटिंग्स"],["Language",null,"भाषा"],
@@ -256,7 +261,7 @@ function App() {
   const [modal,    setModal]    = useState(null);
   const [toast,    setToast]    = useState(null);
   const [tick,     setTick]     = useState(0);
-  const [day,      setDay]      = useState(() => loadLS("rb_day", false));
+  const [day,      setDay]      = useState(() => loadLS("rb_day", false)); _day=day;
   const refresh = () => setTick(n=>n+1);
 
   useEffect(() => {
@@ -498,8 +503,6 @@ function Payments({tenants,recs,yk,settings,vm,onPayment,onElec,day}){
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,"_blank");
   };
 
-  const Inp = ({...p}) => <input style={{background:D.inputBg(day),border:`1px solid ${D.inputBdr(day)}`,borderRadius:10,padding:"11px 13px",color:D.text(day),fontSize:14,width:"100%",outline:"none"}} {...p}/>;
-  const PBtn = ({style,children,...p}) => <button style={{background:D.text(day),border:"none",color:day?"#fff":"#000",padding:"12px",borderRadius:10,fontWeight:700,cursor:"pointer",fontSize:14,width:"100%",...style}} {...p}>{children}</button>;
 
   return (
     <div className="fade-up" style={wide?{display:"grid",gridTemplateColumns:"260px 1fr",gap:20,alignItems:"start"}:{}}>
@@ -683,8 +686,6 @@ function History({tenants,vm,day}){
 function Settings({settings,onSave,day,lang,setLang}){
   const wide=useBP()!=="mobile";
   const [rate,setRate] = useState(settings.rate);
-  const Inp = ({...p}) => <input style={{background:D.inputBg(day),border:`1px solid ${D.inputBdr(day)}`,borderRadius:10,padding:"11px 13px",color:D.text(day),fontSize:14,width:"100%",outline:"none"}} {...p}/>;
-  const PBtn = ({style,children,...p}) => <button style={{background:D.text(day),border:"none",color:day?"#fff":"#000",padding:"12px",borderRadius:10,fontWeight:700,cursor:"pointer",fontSize:14,width:"100%",...style}} {...p}>{children}</button>;
   return (
     <div className="fade-up">
       <div style={{fontWeight:800,fontSize:18,color:D.text(day),marginBottom:16}}>Settings</div>
@@ -720,8 +721,6 @@ function TenantModal({mode,existing,onClose,onSave,day}){
     : {name:"",room:"",rent:"",phone:"",joinDate:new Date().toISOString().split("T")[0],baseReading:0}
   );
   const set = (k,v) => setForm(f=>({...f,[k]:v}));
-  const Inp = ({...p}) => <input style={{background:D.inputBg(day),border:`1px solid ${D.inputBdr(day)}`,borderRadius:10,padding:"11px 13px",color:D.text(day),fontSize:14,width:"100%",outline:"none"}} {...p}/>;
-  const PBtn = ({style,children,...p}) => <button style={{background:D.text(day),border:"none",color:day?"#fff":"#000",padding:"12px",borderRadius:10,fontWeight:700,cursor:"pointer",fontSize:14,width:"100%",...style}} {...p}>{children}</button>;
   const fields=[
     {k:"name",       lbl:"Full Name",           ph:"Tenant name",     type:"text"},
     {k:"room",       lbl:"Room Number",          ph:"e.g. 101",        type:"text"},
